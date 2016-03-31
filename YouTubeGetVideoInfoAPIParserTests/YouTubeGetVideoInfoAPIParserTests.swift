@@ -35,7 +35,7 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
     
     func testExample() {
         
-        ["xOvSwdi5dr4.txt"].forEach({
+        ["xOvSwdi5dr4.txt", "alXF1gTNGWE.txt", "Hi9ySoy0JeQ.txt"].forEach({
             // Put setup code here. This method is called before the invocation of each test method in the class.
             print("----------------------------------")
             if let a = file($0) {

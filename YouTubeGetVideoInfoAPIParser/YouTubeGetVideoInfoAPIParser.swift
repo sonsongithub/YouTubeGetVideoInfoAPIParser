@@ -8,46 +8,29 @@
 
 import Foundation
 
-
+/**
+ Parse query style string returned from https://www.youtube.com/get_video_info?video_id=
+ - parameter str: String to be parsed.
+ - returns: Dictionary object as [String:String]
+ */
 func str2dict(str: String) -> [String:String] {
     return str.componentsSeparatedByString("&").reduce([:] as [String:String], combine: {
         var d = $0
         let components = $1.componentsSeparatedByString("=")
         if components.count == 2 {
-            d[components[0]] = components[1]
+            if let key = components[0].stringByRemovingPercentEncoding, value = components[1].stringByRemovingPercentEncoding {
+                d[key] = value
+            }
         }
         return d
     })
 }
 
-func YouTubeStreamingWithDictionary(dict: [String:String]) -> YouTubeStreamingInfo? {
-    let newDict = dict.reduce([:] as [String:String], combine: {
-        var d = $0
-        if let key = $1.0.stringByRemovingPercentEncoding, value = $1.1.stringByRemovingPercentEncoding {
-            d[key] = value
-        }
-        return d
-    })
-    guard let type = newDict["type"] else { return nil }
-    guard let urlString = newDict["url"] else { return nil }
-    guard let url = NSURL(string: urlString) else { return nil }
-    guard let quality = newDict["quality"] else { return nil }
-    let itag = newDict["itag"] ?? ""
-    let s = newDict["s"] ?? ""
-    let fallback_host = newDict["fallback_host"] ?? ""
-    return YouTubeStreamingInfo(type: type, itag: itag, quality: quality, fallbackHost: fallback_host, s: s, url: url)
-}
-
-func extractMp4Streaming(streamings: [YouTubeStreamingInfo]) -> YouTubeStreamingInfo? {
-    for streaming in streamings {
-        if let _ = streaming.type.rangeOfString("video/mp4") {
-            return streaming
-        }
-    }
-    return nil
-}
-
-enum YouTubeStreamingQuality : Comparable {
+/**
+ Enum for video quality.
+ This is comparable
+ */
+public enum StreamingQuality : Comparable {
     case Small
     case Medium
     case Large
@@ -87,242 +70,240 @@ enum YouTubeStreamingQuality : Comparable {
     }
 }
 
-func ==(x: YouTubeStreamingQuality, y: YouTubeStreamingQuality) -> Bool { return x.level == y.level }
-func <(x: YouTubeStreamingQuality, y: YouTubeStreamingQuality) -> Bool { return x.level < y.level }
+public func ==(x: StreamingQuality, y: StreamingQuality) -> Bool { return x.level == y.level }
+public func <(x: StreamingQuality, y: StreamingQuality) -> Bool { return x.level < y.level }
 
-struct YouTubeStreamingInfo {
-    let type: String
-    let itag: String
-    let quality: YouTubeStreamingQuality
-    let fallbackHost: String
-    let url: NSURL
-    let s: String
+/**
+ Streaming format
+ */
+public struct FormatStreamMap {
+    public let type: String
+    public let itag: String
+    public let quality: StreamingQuality
+    public let fallbackHost: String
+    public let url: NSURL
+    public let s: String
     
-    init(type: String, itag: String, quality: String, fallbackHost: String, s: String, url: NSURL) {
+    public init?(_ dict: [String:String]) {
+        guard let type = dict["type"] else { return nil }
+        guard let urlString = dict["url"] else { return nil }
+        guard let url = NSURL(string: urlString) else { return nil }
+        guard let quality = dict["quality"] else { return nil }
+        
         self.type = type
-        self.itag = itag
-        self.quality = YouTubeStreamingQuality(quality)
-        self.fallbackHost = fallbackHost
         self.url = url
-        self.s = s
+        self.quality = StreamingQuality(quality)
+        self.itag = dict["itag"] ?? ""
+        self.s = dict["s"] ?? ""
+        self.fallbackHost = dict["fallback_host"] ?? ""
     }
 }
 
-struct YouTubeStreaming {
+/**
+ Streaming information
+ */
+public struct YouTubeStreaming {
     /// csi_page_type
-    let csiPageType: String
-    /// url_encoded_fmt_stream_map
-    let urlEncodedFmtStreamMap: String
+    public let csiPageType: String
     /// enabled_engage_types
-    let enabledEngageTypes: String
+    public let enabledEngageTypes: String
     /// tag_for_child_directed
-    let tagForChildDirected: Bool
+    public let tagForChildDirected: Bool
     /// enablecsi
-    let enablecsi: Int
+    public let enablecsi: Int
     /// caption_tracks
-    let captionTracks: String
+    public let captionTracks: String
     /// ptk
-    let ptk: String
+    public let ptk: String
     /// account_playback_token
-    let accountPlaybackToken: String
+    public let accountPlaybackToken: String
     /// ad_device
-    let adDevice: Int
+    public let adDevice: Int
     /// c
-    let c: String
+    public let c: String
     /// video_verticals
-    let videoVerticals: String
+    public let videoVerticals: String
     /// iurlmq
-    let iurlmq: String
+    public let iurlmq: String
     /// cc_asr
-    let ccAsr: Int
+    public let ccAsr: Int
     /// ptchn
-    let ptchn: String
+    public let ptchn: String
     /// iv_invideo_url
-    let ivInvideoUrl: String
+    public let ivInvideoUrl: String
     /// status
-    let status: String
+    public let status: String
     /// as_launched_in_country
-    let asLaunchedInCountry: Int
+    public let asLaunchedInCountry: Int
     /// allow_html5_ads
-    let allowHtml5Ads: Int
+    public let allowHtml5Ads: Int
     /// cc3_module
-    let cc3Module: Int
+    public let cc3Module: Int
     /// ad_module
-    let adModule: String
+    public let adModule: String
     /// timestamp
-    let timestamp: Float
+    public let timestamp: Float
     /// adsense_video_doc_id
-    let adsenseVideoDocId: String
+    public let adsenseVideoDocId: String
     /// oid
-    let oid: String
+    public let oid: String
     /// ypc_ad_indicator
-    let ypcAdIndicator: Float
+    public let ypcAdIndicator: Float
     /// keywords
-    let keywords: String
+    public let keywords: [String]
     /// avg_rating
-    let avgRating: Float
+    public let avgRating: Float
     /// mpvid
-    let mpvid: String
+    public let mpvid: String
     /// default_audio_track_index
-    let defaultAudioTrackIndex: Int
+    public let defaultAudioTrackIndex: Int
     /// pltype
-    let pltype: String
+    public let pltype: String
     /// length_seconds
-    let lengthSeconds: Int
+    public let lengthSeconds: Int
     /// watermark
-    let watermark: String
+    public let watermark: [String]
     /// ucid
-    let ucid: String
+    public let ucid: String
     /// afv_ad_tag
-    let afvAdTag: String
+    public let afvAdTag: String
     /// of
-    let of: String
+    public let of: String
     /// cver
-    let cver: Float
+    public let cver: Float
     /// ad_flags
-    let adFlags: Int
+    public let adFlags: Int
     /// allow_ratings
-    let allowRatings: Int
+    public let allowRatings: Int
     /// allow_embed
-    let allowEmbed: Int
+    public let allowEmbed: Int
     /// show_content_thumbnail
-    let showContentThumbnail: Bool
+    public let showContentThumbnail: Bool
     /// gut_tag
-    let gutTag: String
+    public let gutTag: String
     /// fexp
-    let fexp: String
+    public let fexp: String
     /// midroll_prefetch_size
-    let midrollPrefetchSize: Int
+    public let midrollPrefetchSize: Int
     /// shortform
-    let shortform: Bool
+    public let shortform: Bool
     /// dbp
-    let dbp: String
+    public let dbp: String
     /// probe_url
-    let probeUrl: String
+    public let probeUrl: String
     /// sffb
-    let sffb: Bool
+    public let sffb: Bool
     /// cc_font
-    let ccFont: String
+    public let ccFont: String
     /// allowed_ads
-    let allowedAds: String
+    public let allowedAds: String
     /// tmi
-    let tmi: Int
+    public let tmi: Int
     /// storyboard_spec
-    let storyboardSpec: String
+    public let storyboardSpec: String
     /// fade_in_duration_milliseconds
-    let fadeInDurationMilliseconds: Int
+    public let fadeInDurationMilliseconds: Int
     /// idpj
-    let idpj: Int
+    public let idpj: Int
     /// is_listed
-    let isListed: Int
+    public let isListed: Int
     /// fmt_list
-    let fmtList: String
+    public let fmtList: String
     /// iv_module
-    let ivModule: String
+    public let ivModule: String
     /// iurlmaxres
-    let iurlmaxres: String
-    /// adaptive_fmts
-    let adaptiveFmts: String
+    public let iurlmaxres: String
+    /// adaptive_fmts---------------------
+    public let adaptiveFmts: String
     /// author
-    let author: String
+    public let author: String
     /// apply_fade_on_midrolls
-    let applyFadeOnMidrolls: Bool
+    public let applyFadeOnMidrolls: Bool
     /// has_cc
-    let hasCc: Bool
+    public let hasCc: Bool
     /// fade_in_start_milliseconds
-    let fadeInStartMilliseconds: Int
+    public let fadeInStartMilliseconds: Int
     /// cc_fonts_url
-    let ccFontsUrl: String
+    public let ccFontsUrl: String
     /// no_get_video_log
-    let noGetVideoLog: Int
+    public let noGetVideoLog: Int
     /// ad_slots
-    let adSlots: Int
+    public let adSlots: Int
     /// iv_load_policy
-    let ivLoadPolicy: Int
+    public let ivLoadPolicy: Int
     /// iv_allow_in_place_switch
-    let ivAllowInPlaceSwitch: Int
+    public let ivAllowInPlaceSwitch: Int
     /// vm
-    let vm: String
+    public let vm: String
     /// cc_module
-    let ccModule: String
+    public let ccModule: String
     /// excluded_ads
-    let excludedAds: String
+    public let excludedAds: String
     /// iurlhq
-    let iurlhq: String
+    public let iurlhq: String
     /// plid
-    let plid: String
+    public let plid: String
     /// muted
-    let muted: Int
+    public let muted: Int
     /// loeid
-    let loeid: String
+    public let loeid: String
     /// title
-    let title: String
+    public let title: String
     /// dashmpd
-    let dashmpd: String
+    public let dashmpd: String
     /// fade_out_start_milliseconds
-    let fadeOutStartMilliseconds: Int
+    public let fadeOutStartMilliseconds: Int
     /// iurl
-    let iurl: String
+    public let iurl: String
     /// instream_long
-    let instreamLong: Bool
+    public let instreamLong: Bool
     /// cid
-    let cid: Int
+    public let cid: Int
     /// iurlsd
-    let iurlsd: String
+    public let iurlsd: String
     /// use_cipher_signature
-    let useCipherSignature: Bool
+    public let useCipherSignature: Bool
     /// ttsurl
-    let ttsurl: String
-    /// caption_translation_languages
-    let captionTranslationLanguages: String
+    public let ttsurl: String
+    /// caption_translation_languages--------------------------------------
+    public let captionTranslationLanguages: String
     /// core_dbp
-    let coreDbp: String
+    public let coreDbp: String
     /// video_id
-    let videoId: String
+    public let videoId: String
     /// token
-    let token: String
+    public let token: String
     /// eventid
-    let eventid: String
+    public let eventid: String
     /// caption_audio_tracks
-    let captionAudioTracks: String
+    public let captionAudioTracks: String
     /// cl
-    let cl: Float
+    public let cl: Float
     /// iv3_module
-    let iv3Module: Int
+    public let iv3Module: Int
     /// ldpj
-    let ldpj: Int
+    public let ldpj: Int
     /// afv
-    let afv: Bool
+    public let afv: Bool
     /// fade_out_duration_milliseconds
-    let fadeOutDurationMilliseconds: Int
+    public let fadeOutDurationMilliseconds: Int
     /// hl
-    let hl: String
+    public let hl: String
     /// subtitles_xlb
-    let subtitlesXlb: String
+    public let subtitlesXlb: String
     /// view_count
-    let viewCount: Int
+    public let viewCount: Int
     /// ad_logging_flag
-    let adLoggingFlag: Int
+    public let adLoggingFlag: Int
     /// thumbnail_url
-    let thumbnailUrl: String
+    public let thumbnailUrl: String
     /// midroll_freqcap
-    let midrollFreqcap: Float
-    
+    public let midrollFreqcap: Float
     ///
-    let map: [YouTubeStreamingInfo]
+    public let formatStreamMap: [FormatStreamMap]
     
-    init(dict2: [String:String]) {
-        
-        let dict = dict2.reduce([:] as [String:String], combine: {
-            var d = $0
-            if let key = $1.0.stringByRemovingPercentEncoding, value = $1.1.stringByRemovingPercentEncoding {
-                d[key] = value
-            }
-            return d
-        })
-        
+    init(_ dict: [String:String]) {
         csiPageType = dict["csi_page_type"] ?? ""
-        urlEncodedFmtStreamMap = dict["url_encoded_fmt_stream_map"] ?? ""
         enabledEngageTypes = dict["enabled_engage_types"] ?? ""
         tagForChildDirected = (dict["tag_for_child_directed"] ?? "false").lowercaseString == "true"
         enablecsi = Int(dict["enablecsi"] ?? "0") ?? 0
@@ -345,13 +326,27 @@ struct YouTubeStreaming {
         adsenseVideoDocId = dict["adsense_video_doc_id"] ?? ""
         oid = dict["oid"] ?? ""
         ypcAdIndicator = Float(dict["ypc_ad_indicator"] ?? "0") ?? 0
-        keywords = dict["keywords"] ?? ""
+        
+        if let temp = dict["keywords"] {
+            keywords = temp.componentsSeparatedByString(",")
+                .map({ $0.stringByReplacingOccurrencesOfString("+", withString: " ")})
+        } else {
+            keywords = []
+        }
+        
         avgRating = Float(dict["avg_rating"] ?? "0") ?? 0
         mpvid = dict["mpvid"] ?? ""
         defaultAudioTrackIndex = Int(dict["default_audio_track_index"] ?? "0") ?? 0
         pltype = dict["pltype"] ?? ""
         lengthSeconds = Int(dict["length_seconds"] ?? "0") ?? 0
-        watermark = dict["watermark"] ?? ""
+        
+        if let temp = dict["watermark"] {
+            watermark = temp.componentsSeparatedByString(",")
+                .filter({ $0.characters.count > 0 })
+        } else {
+            watermark = []
+        }
+        
         ucid = dict["ucid"] ?? ""
         afvAdTag = dict["afv_ad_tag"] ?? ""
         of = dict["of"] ?? ""
@@ -394,7 +389,11 @@ struct YouTubeStreaming {
         plid = dict["plid"] ?? ""
         muted = Int(dict["muted"] ?? "0") ?? 0
         loeid = dict["loeid"] ?? ""
-        title = dict["title"] ?? ""
+        if let temp = dict["title"] {
+            title = temp.stringByReplacingOccurrencesOfString("+", withString: " ")
+        } else {
+            title = ""
+        }
         dashmpd = dict["dashmpd"] ?? ""
         fadeOutStartMilliseconds = Int(dict["fade_out_start_milliseconds"] ?? "0") ?? 0
         iurl = dict["iurl"] ?? ""
@@ -422,30 +421,41 @@ struct YouTubeStreaming {
         midrollFreqcap = Float(dict["midroll_freqcap"] ?? "0") ?? 0
         
         if let value = dict["url_encoded_fmt_stream_map"] {
-            map = value
+            formatStreamMap = value
                 .componentsSeparatedByString(",")
                 .flatMap({ str2dict($0) })
-                .flatMap({ YouTubeStreamingWithDictionary($0) })
+                .flatMap({ FormatStreamMap($0) })
                 .sort({$0.0.quality < $0.1.quality})
         }
         else {
-            map = []
+            formatStreamMap = []
         }
     }
 }
 
-func YouTubeStreamingInfoFromString(string:String) -> [YouTubeStreamingInfo] {
+/**
+ Get FormatStreamMap array from string directly.
+ YouTubeStreaming object is not created in this method.
+ - parameter string: String to be parsed.
+ - returns: Array of FormatStreamMap.
+ */
+public func FormatStreamMapFromString(string:String) -> [FormatStreamMap] {
     let dict = str2dict(string)
     if let value = dict["url_encoded_fmt_stream_map"], decoded = value.stringByRemovingPercentEncoding {
         return decoded
             .componentsSeparatedByString(",")
             .flatMap({ str2dict($0) })
-            .flatMap({ YouTubeStreamingWithDictionary($0) })
+            .flatMap({ FormatStreamMap($0) })
             .sort({$0.0.quality < $0.1.quality})
     }
     return []
 }
 
-func YouTubeStreamingFromString(string:String) -> YouTubeStreaming {
-    return YouTubeStreaming(dict2: str2dict(string))
+/**
+ Get YouTubeStreaming from string.
+ - parameter string: String to be parsed.
+ - returns: YouTubeStreaming object.
+ */
+public func YouTubeStreamingFromString(string:String) -> YouTubeStreaming {
+    return YouTubeStreaming(str2dict(string))
 }
