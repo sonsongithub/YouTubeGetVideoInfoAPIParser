@@ -441,8 +441,8 @@ public struct YouTubeStreaming {
  */
 public func FormatStreamMapFromString(string:String) -> [FormatStreamMap] {
     let dict = str2dict(string)
-    if let value = dict["url_encoded_fmt_stream_map"], decoded = value.stringByRemovingPercentEncoding {
-        return decoded
+    if let value = dict["url_encoded_fmt_stream_map"] {
+        return value
             .componentsSeparatedByString(",")
             .flatMap({ str2dict($0) })
             .flatMap({ FormatStreamMap($0) })

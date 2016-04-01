@@ -41,6 +41,9 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
             if let a = file($0) {
                 let i = YouTubeStreamingFromString(a)
                 print(i)
+                
+                let j = FormatStreamMapFromString(a)
+                print(j)
             }
         })
     }
