@@ -1,7 +1,7 @@
 # YouTubeStreamingURLParser
-Library to parse YouTube streaming data from get\_video\_info API.
+Swift Library to parse YouTube streaming data from get\_video\_info API.
 
-## Text parser for YouTube streaming
+## Text parser for YouTube streaming in Swift
 
 * https://www.youtube.com/get\_video\_info?video_id=XXXXXXXXXXXXX
 * This API returns a streaming information with CGI parameter style.
@@ -61,10 +61,15 @@ let task = session.dataTaskWithRequest(URLRequest, completionHandler: { (data, r
     if let error = error {
         print(error)
     } else if let data = data, result = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+        // Pattern 1
+        // Get streaming map directly
 	    let maps = FormatStreamMapFromString(result)
 	    if let map = maps.first {
 	        print(map.url)
 	    }
+	    // Pattern 2
+	    // Get streaming informaton
+	    // You can access stream map from this object, too.
 	    let streaming = YouTubeStreamingFromString(result)
 	    print(streaming.title)
     }
