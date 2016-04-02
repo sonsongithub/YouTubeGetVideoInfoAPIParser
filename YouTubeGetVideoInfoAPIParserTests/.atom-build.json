@@ -1,0 +1,3 @@
+{
+    "cmd": "cat ./alXF1gTNGWE.txt | ruby test.rb | pbcopy"
+}

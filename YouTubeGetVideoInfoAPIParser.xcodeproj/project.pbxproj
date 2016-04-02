@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		140880F91CAF664600F005E3 /* alXF1gTNGWE.json in Resources */ = {isa = PBXBuildFile; fileRef = 140880F61CAF664600F005E3 /* alXF1gTNGWE.json */; };
+		140880FA1CAF664600F005E3 /* Hi9ySoy0JeQ.json in Resources */ = {isa = PBXBuildFile; fileRef = 140880F71CAF664600F005E3 /* Hi9ySoy0JeQ.json */; };
+		140880FB1CAF664600F005E3 /* xOvSwdi5dr4.json in Resources */ = {isa = PBXBuildFile; fileRef = 140880F81CAF664600F005E3 /* xOvSwdi5dr4.json */; };
 		146BD8951CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 146BD8941CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		146BD89C1CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146BD8911CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParser.framework */; };
 		146BD8A11CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146BD8A01CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParserTests.swift */; };
@@ -27,6 +30,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		140880F61CAF664600F005E3 /* alXF1gTNGWE.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = alXF1gTNGWE.json; sourceTree = "<group>"; };
+		140880F71CAF664600F005E3 /* Hi9ySoy0JeQ.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Hi9ySoy0JeQ.json; sourceTree = "<group>"; };
+		140880F81CAF664600F005E3 /* xOvSwdi5dr4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = xOvSwdi5dr4.json; sourceTree = "<group>"; };
 		146BD8911CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = YouTubeGetVideoInfoAPIParser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		146BD8941CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YouTubeGetVideoInfoAPIParser.h; sourceTree = "<group>"; };
 		146BD8961CAD3A0B00CB1A3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -89,6 +95,9 @@
 		146BD89F1CAD3A0B00CB1A3C /* YouTubeGetVideoInfoAPIParserTests */ = {
 			isa = PBXGroup;
 			children = (
+				140880F61CAF664600F005E3 /* alXF1gTNGWE.json */,
+				140880F71CAF664600F005E3 /* Hi9ySoy0JeQ.json */,
+				140880F81CAF664600F005E3 /* xOvSwdi5dr4.json */,
 				146BD8AD1CAD3A6700CB1A3C /* alXF1gTNGWE.txt */,
 				146BD8AE1CAD3A6700CB1A3C /* Hi9ySoy0JeQ.txt */,
 				146BD8AF1CAD3A6700CB1A3C /* xOvSwdi5dr4.txt */,
@@ -196,8 +205,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				140880F91CAF664600F005E3 /* alXF1gTNGWE.json in Resources */,
+				140880FB1CAF664600F005E3 /* xOvSwdi5dr4.json in Resources */,
 				146BD8B21CAD3A6700CB1A3C /* xOvSwdi5dr4.txt in Resources */,
 				146BD8B01CAD3A6700CB1A3C /* alXF1gTNGWE.txt in Resources */,
+				140880FA1CAF664600F005E3 /* Hi9ySoy0JeQ.json in Resources */,
 				146BD8B11CAD3A6700CB1A3C /* Hi9ySoy0JeQ.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -397,6 +409,7 @@
 				146BD8A71CAD3A0B00CB1A3C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		146BD8A81CAD3A0B00CB1A3C /* Build configuration list for PBXNativeTarget "YouTubeGetVideoInfoAPIParserTests" */ = {
 			isa = XCConfigurationList;
@@ -405,6 +418,7 @@
 				146BD8AA1CAD3A0B00CB1A3C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -52,6 +52,23 @@ public enum StreamingQuality : Comparable {
         }
     }
     
+    var string: String {
+        get {
+            switch self {
+            case .Small:
+                return "small"
+            case .Medium:
+                return "medium"
+            case .Large:
+                return "large"
+            case .Hd720:
+                return "hd720"
+            default:
+                return "other"
+            }
+        }
+    }
+    
     var level: Int {
         get {
             switch self {
@@ -302,7 +319,7 @@ public struct YouTubeStreaming {
     /// midroll_freqcap
     public let midrollFreqcap: Float
     ///
-    public let formatStreamMap: [FormatStreamMap]
+    public let urlEncodedFmtStreamMap: [FormatStreamMap]
     
     init(_ dict: [String:String]) {
         csiPageType = dict["csi_page_type"] ?? ""
@@ -423,14 +440,14 @@ public struct YouTubeStreaming {
         midrollFreqcap = Float(dict["midroll_freqcap"] ?? "0") ?? 0
         
         if let value = dict["url_encoded_fmt_stream_map"] {
-            formatStreamMap = value
+            urlEncodedFmtStreamMap = value
                 .componentsSeparatedByString(",")
                 .flatMap({ str2dict($0) })
                 .flatMap({ FormatStreamMap($0) })
                 .sort({$0.0.quality < $0.1.quality})
         }
         else {
-            formatStreamMap = []
+            urlEncodedFmtStreamMap = []
         }
     }
 }
