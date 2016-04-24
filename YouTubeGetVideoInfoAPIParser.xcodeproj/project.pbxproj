@@ -125,6 +125,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 146BD8A51CAD3A0B00CB1A3C /* Build configuration list for PBXNativeTarget "YouTubeGetVideoInfoAPIParser" */;
 			buildPhases = (
+				14578C491CCD880400977437 /* swiftlint */,
 				146BD88C1CAD3A0B00CB1A3C /* Sources */,
 				146BD88D1CAD3A0B00CB1A3C /* Frameworks */,
 				146BD88E1CAD3A0B00CB1A3C /* Headers */,
@@ -215,6 +216,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		14578C491CCD880400977437 /* swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  echo \"swiftlint\"\n  swiftlint\nelse\n  echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		146BD88C1CAD3A0B00CB1A3C /* Sources */ = {

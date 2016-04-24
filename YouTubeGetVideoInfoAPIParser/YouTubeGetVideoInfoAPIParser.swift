@@ -30,7 +30,7 @@ func str2dict(str: String) -> [String:String] {
  Enum for video quality.
  This is comparable
  */
-public enum StreamingQuality : Comparable {
+public enum StreamingQuality: Comparable {
     case Small
     case Medium
     case Large
@@ -87,8 +87,8 @@ public enum StreamingQuality : Comparable {
     }
 }
 
-public func ==(x: StreamingQuality, y: StreamingQuality) -> Bool { return x.level == y.level }
-public func <(x: StreamingQuality, y: StreamingQuality) -> Bool { return x.level < y.level }
+public func == (x: StreamingQuality, y: StreamingQuality) -> Bool { return x.level == y.level }
+public func < (x: StreamingQuality, y: StreamingQuality) -> Bool { return x.level < y.level }
 
 /**
  Streaming format
@@ -445,8 +445,7 @@ public struct YouTubeStreaming {
                 .flatMap({ str2dict($0) })
                 .flatMap({ FormatStreamMap($0) })
                 .sort({$0.0.quality < $0.1.quality})
-        }
-        else {
+        } else {
             urlEncodedFmtStreamMap = []
         }
     }
@@ -458,7 +457,7 @@ public struct YouTubeStreaming {
  - parameter string: String to be parsed.
  - returns: Array of FormatStreamMap.
  */
-public func FormatStreamMapFromString(string:String) -> [FormatStreamMap] {
+public func FormatStreamMapFromString(string: String) -> [FormatStreamMap] {
     let dict = str2dict(string)
     if let value = dict["url_encoded_fmt_stream_map"] {
         return value
@@ -475,6 +474,6 @@ public func FormatStreamMapFromString(string:String) -> [FormatStreamMap] {
  - parameter string: String to be parsed.
  - returns: YouTubeStreaming object.
  */
-public func YouTubeStreamingFromString(string:String) -> YouTubeStreaming {
+public func YouTubeStreamingFromString(string: String) -> YouTubeStreaming {
     return YouTubeStreaming(str2dict(string))
 }
