@@ -61,18 +61,39 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
                 if let error = error {
                     print(error)
                 } else if let data = data, result = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                    let maps = FormatStreamMapFromString(result)
-                    if let map = maps.first {
-                        print(map.url)
+                    do {
+                        let maps = try FormatStreamMapFromString(result)
+                        if let map = maps.first {
+                            print(map.url)
+                        }
+                    } catch {
+                        print(error)
+                        XCTFail()
                     }
-                    let streaming = YouTubeStreamingFromString(result)
-                    print(streaming.title)
+                    do {
+                        let streaming = try YouTubeStreamingFromString(result)
+                        print(streaming.title)
+                    } catch {
+                        print(error)
+                        XCTFail()
+                    }
                 }
                 documentOpenExpectation.fulfill()
             })
             task.resume()
         }
         self.waitForExpectationsWithTimeout(30, handler: nil)
+    }
+    
+    func testErrorResponse() {
+        if let text = textFromFile("error.txt") {
+            do {
+                let _ = try FormatStreamMapFromString(text)
+                XCTFail()
+            } catch {
+                print(error)
+            }
+        }
     }
     
     func testExample() {
@@ -82,34 +103,44 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
             ("Hi9ySoy0JeQ.txt", "Hi9ySoy0JeQ.json")
         ].forEach({
             if let text = textFromFile($0.0), json = jsonFromFile($0.1) as? [String:AnyObject] {
-                let streaming = YouTubeStreamingFromString(text)
-                let map = FormatStreamMapFromString(text)
                 if let mapjson = json["url_encoded_fmt_stream_map"] as? [[String:String]] {
-                    let sorted = map.sort({ Int($0.0.itag) > Int($0.1.itag) })
-                    XCTAssert(sorted.count == mapjson.count)
-                    for i in 0 ..< sorted.count {
-                        if let type = mapjson[i]["type"] {
-                            XCTAssert(sorted[i].type.stringByReplacingOccurrencesOfString("+", withString: " ") == type)
+                    do {
+                        let streaming = try YouTubeStreamingFromString(text)
+                        if let title = json["title"] as? String {
+                            XCTAssert(streaming.title == title)
                         } else { XCTFail() }
-                        if let url = mapjson[i]["url"] {
-                            XCTAssert(sorted[i].url.absoluteString == url)
+                        if let temp = json["length_seconds"] as? String, lengthSeconds = Int(temp) {
+                            XCTAssert(streaming.lengthSeconds == lengthSeconds)
                         } else { XCTFail() }
-                        if let itag = mapjson[i]["itag"] {
-                            XCTAssert(sorted[i].itag == itag)
-                        } else { XCTFail() }
-                        if let fallback_host = mapjson[i]["fallback_host"] {
-                            XCTAssert(sorted[i].fallbackHost == fallback_host)
-                        } else { XCTFail() }
-                        if let quality = mapjson[i]["quality"] {
-                            XCTAssert(sorted[i].quality.string == quality)
-                        } else { XCTFail() }
+                    } catch {
+                        print(error)
+                        XCTFail()
                     }
-                    if let title = json["title"] as? String {
-                        XCTAssert(streaming.title == title)
-                    } else { XCTFail() }
-                    if let temp = json["length_seconds"] as? String, lengthSeconds = Int(temp) {
-                        XCTAssert(streaming.lengthSeconds == lengthSeconds)
-                    } else { XCTFail() }
+                    do {
+                        let map = try FormatStreamMapFromString(text)
+                        let sorted = map.sort({ Int($0.0.itag) > Int($0.1.itag) })
+                        XCTAssert(sorted.count == mapjson.count)
+                        for i in 0 ..< sorted.count {
+                            if let type = mapjson[i]["type"] {
+                                XCTAssert(sorted[i].type.stringByReplacingOccurrencesOfString("+", withString: " ") == type)
+                            } else { XCTFail() }
+                            if let url = mapjson[i]["url"] {
+                                XCTAssert(sorted[i].url.absoluteString == url)
+                            } else { XCTFail() }
+                            if let itag = mapjson[i]["itag"] {
+                                XCTAssert(sorted[i].itag == itag)
+                            } else { XCTFail() }
+                            if let fallback_host = mapjson[i]["fallback_host"] {
+                                XCTAssert(sorted[i].fallbackHost == fallback_host)
+                            } else { XCTFail() }
+                            if let quality = mapjson[i]["quality"] {
+                                XCTAssert(sorted[i].quality.string == quality)
+                            } else { XCTFail() }
+                        }
+                    } catch {
+                        print(error)
+                        XCTFail()
+                    }
                 } else {
                     XCTFail()
                 }
@@ -118,12 +149,4 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
             }
         })
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
 }

@@ -457,7 +457,7 @@ public struct YouTubeStreaming {
  - parameter string: String to be parsed.
  - returns: Array of FormatStreamMap.
  */
-public func FormatStreamMapFromString(string: String) -> [FormatStreamMap] {
+public func FormatStreamMapFromString(string: String) throws -> [FormatStreamMap] {
     let dict = str2dict(string)
     if let value = dict["url_encoded_fmt_stream_map"] {
         return value
@@ -465,8 +465,10 @@ public func FormatStreamMapFromString(string: String) -> [FormatStreamMap] {
             .flatMap({ str2dict($0) })
             .flatMap({ FormatStreamMap($0) })
             .sort({$0.0.quality < $0.1.quality})
+    } else if let errorcodeStr = dict["errorcode"], errorcode = Int(errorcodeStr) {
+        throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: ["description":"unknown error"])
     }
-    return []
+    throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: 0, userInfo: ["description":"unknown error"])
 }
 
 /**
@@ -474,6 +476,12 @@ public func FormatStreamMapFromString(string: String) -> [FormatStreamMap] {
  - parameter string: String to be parsed.
  - returns: YouTubeStreaming object.
  */
-public func YouTubeStreamingFromString(string: String) -> YouTubeStreaming {
-    return YouTubeStreaming(str2dict(string))
+public func YouTubeStreamingFromString(string: String) throws -> YouTubeStreaming {
+    let dict = str2dict(string)
+    if let _ = dict["url_encoded_fmt_stream_map"] {
+        return YouTubeStreaming(str2dict(string))
+    } else if let errorcodeStr = dict["errorcode"], errorcode = Int(errorcodeStr) {
+        throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: ["description":"unknown error"])
+    }
+    throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: 0, userInfo: ["description":"unknown error"])
 }
