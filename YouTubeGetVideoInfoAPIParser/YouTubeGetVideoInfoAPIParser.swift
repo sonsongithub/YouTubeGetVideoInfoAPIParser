@@ -14,11 +14,11 @@ import Foundation
  - returns: Dictionary object as [String:String]
  */
 func str2dict(str: String) -> [String:String] {
-    return str.componentsSeparatedByString("&").reduce([:] as [String:String], combine: {
+    return str.components(separatedBy: "&").reduce([:] as [String:String], combine: {
         var d = $0
-        let components = $1.componentsSeparatedByString("=")
+        let components = $1.components(separatedBy: "=")
         if components.count == 2 {
-            if let key = components[0].stringByRemovingPercentEncoding, value = components[1].stringByRemovingPercentEncoding {
+            if let key = components[0].removingPercentEncoding, value = components[1].removingPercentEncoding {
                 d[key] = value
             }
         }
@@ -98,13 +98,13 @@ public struct FormatStreamMap {
     public let itag: String
     public let quality: StreamingQuality
     public let fallbackHost: String
-    public let url: NSURL
+    public let url: URL
     public let s: String
     
     public init?(_ dict: [String:String]) {
         guard let type = dict["type"] else { return nil }
         guard let urlString = dict["url"] else { return nil }
-        guard let url = NSURL(string: urlString) else { return nil }
+        guard let url = URL(string: urlString) else { return nil }
         guard let quality = dict["quality"] else { return nil }
         
         self.type = type
@@ -324,7 +324,7 @@ public struct YouTubeStreaming {
     init(_ dict: [String:String]) {
         csiPageType = dict["csi_page_type"] ?? ""
         enabledEngageTypes = dict["enabled_engage_types"] ?? ""
-        tagForChildDirected = (dict["tag_for_child_directed"] ?? "false").lowercaseString == "true"
+        tagForChildDirected = (dict["tag_for_child_directed"] ?? "false").lowercased() == "true"
         enablecsi = Int(dict["enablecsi"] ?? "0") ?? 0
         captionTracks = dict["caption_tracks"] ?? ""
         ptk = dict["ptk"] ?? ""
@@ -347,8 +347,8 @@ public struct YouTubeStreaming {
         ypcAdIndicator = Float(dict["ypc_ad_indicator"] ?? "0") ?? 0
         
         if let temp = dict["keywords"] {
-            keywords = temp.componentsSeparatedByString(",")
-                .map({ $0.stringByReplacingOccurrencesOfString("+", withString: " ")})
+            keywords = temp.components(separatedBy: ",")
+                .map({ $0.replacingOccurrences(of: "+", with: " ")})
         } else {
             keywords = []
         }
@@ -360,7 +360,7 @@ public struct YouTubeStreaming {
         lengthSeconds = Int(dict["length_seconds"] ?? "0") ?? 0
         
         if let temp = dict["watermark"] {
-            watermark = temp.componentsSeparatedByString(",")
+            watermark = temp.components(separatedBy: ",")
                 .filter({ $0.characters.count > 0 })
         } else {
             watermark = []
@@ -373,14 +373,14 @@ public struct YouTubeStreaming {
         adFlags = Int(dict["ad_flags"] ?? "0") ?? 0
         allowRatings = Int(dict["allow_ratings"] ?? "0") ?? 0
         allowEmbed = Int(dict["allow_embed"] ?? "0") ?? 0
-        showContentThumbnail = (dict["show_content_thumbnail"] ?? "false").lowercaseString == "true"
+        showContentThumbnail = (dict["show_content_thumbnail"] ?? "false").lowercased() == "true"
         gutTag = dict["gut_tag"] ?? ""
         fexp = dict["fexp"] ?? ""
         midrollPrefetchSize = Int(dict["midroll_prefetch_size"] ?? "0") ?? 0
-        shortform = (dict["shortform"] ?? "false").lowercaseString == "true"
+        shortform = (dict["shortform"] ?? "false").lowercased() == "true"
         dbp = dict["dbp"] ?? ""
         probeUrl = dict["probe_url"] ?? ""
-        sffb = (dict["sffb"] ?? "false").lowercaseString == "true"
+        sffb = (dict["sffb"] ?? "false").lowercased() == "true"
         ccFont = dict["cc_font"] ?? ""
         allowedAds = dict["allowed_ads"] ?? ""
         tmi = Int(dict["tmi"] ?? "0") ?? 0
@@ -393,8 +393,8 @@ public struct YouTubeStreaming {
         iurlmaxres = dict["iurlmaxres"] ?? ""
         adaptiveFmts = dict["adaptive_fmts"] ?? ""
         author = dict["author"] ?? ""
-        applyFadeOnMidrolls = (dict["apply_fade_on_midrolls"] ?? "false").lowercaseString == "true"
-        hasCc = (dict["has_cc"] ?? "false").lowercaseString == "true"
+        applyFadeOnMidrolls = (dict["apply_fade_on_midrolls"] ?? "false").lowercased() == "true"
+        hasCc = (dict["has_cc"] ?? "false").lowercased() == "true"
         fadeInStartMilliseconds = Int(dict["fade_in_start_milliseconds"] ?? "0") ?? 0
         ccFontsUrl = dict["cc_fonts_url"] ?? ""
         noGetVideoLog = Int(dict["no_get_video_log"] ?? "0") ?? 0
@@ -409,17 +409,17 @@ public struct YouTubeStreaming {
         muted = Int(dict["muted"] ?? "0") ?? 0
         loeid = dict["loeid"] ?? ""
         if let temp = dict["title"] {
-            title = temp.stringByReplacingOccurrencesOfString("+", withString: " ")
+            title = temp.replacingOccurrences(of: "+", with: " ")
         } else {
             title = ""
         }
         dashmpd = dict["dashmpd"] ?? ""
         fadeOutStartMilliseconds = Int(dict["fade_out_start_milliseconds"] ?? "0") ?? 0
         iurl = dict["iurl"] ?? ""
-        instreamLong = (dict["instream_long"] ?? "false").lowercaseString == "true"
+        instreamLong = (dict["instream_long"] ?? "false").lowercased() == "true"
         cid = Int(dict["cid"] ?? "0") ?? 0
         iurlsd = dict["iurlsd"] ?? ""
-        useCipherSignature = (dict["use_cipher_signature"] ?? "false").lowercaseString == "true"
+        useCipherSignature = (dict["use_cipher_signature"] ?? "false").lowercased() == "true"
         ttsurl = dict["ttsurl"] ?? ""
         captionTranslationLanguages = dict["caption_translation_languages"] ?? ""
         coreDbp = dict["core_dbp"] ?? ""
@@ -430,7 +430,7 @@ public struct YouTubeStreaming {
         cl = Float(dict["cl"] ?? "0") ?? 0
         iv3Module = Int(dict["iv3_module"] ?? "0") ?? 0
         ldpj = Int(dict["ldpj"] ?? "0") ?? 0
-        afv = (dict["afv"] ?? "false").lowercaseString == "true"
+        afv = (dict["afv"] ?? "false").lowercased() == "true"
         fadeOutDurationMilliseconds = Int(dict["fade_out_duration_milliseconds"] ?? "0") ?? 0
         hl = dict["hl"] ?? ""
         subtitlesXlb = dict["subtitles_xlb"] ?? ""
@@ -439,12 +439,12 @@ public struct YouTubeStreaming {
         thumbnailUrl = dict["thumbnail_url"] ?? ""
         midrollFreqcap = Float(dict["midroll_freqcap"] ?? "0") ?? 0
         
-        if let value = dict["url_encoded_fmt_stream_map"] {
+        if let value = dict["url_encoded_fmt_stream_map"] as String? {
             urlEncodedFmtStreamMap = value
-                .componentsSeparatedByString(",")
-                .flatMap({ str2dict($0) })
+                .components(separatedBy: ",")
+                .flatMap({ str2dict(str: $0) })
                 .flatMap({ FormatStreamMap($0) })
-                .sort({$0.0.quality < $0.1.quality})
+                .sorted(isOrderedBefore: {$0.0.quality < $0.1.quality})
         } else {
             urlEncodedFmtStreamMap = []
         }
@@ -458,13 +458,13 @@ public struct YouTubeStreaming {
  - returns: Array of FormatStreamMap.
  */
 public func FormatStreamMapFromString(string: String) throws -> [FormatStreamMap] {
-    let dict = str2dict(string)
+    let dict = str2dict(str: string)
     if let value = dict["url_encoded_fmt_stream_map"] {
         return value
-            .componentsSeparatedByString(",")
-            .flatMap({ str2dict($0) })
+            .components(separatedBy: ",")
+            .flatMap({ str2dict(str: $0) })
             .flatMap({ FormatStreamMap($0) })
-            .sort({$0.0.quality < $0.1.quality})
+            .sorted(isOrderedBefore: {$0.0.quality < $0.1.quality})
     } else if let errorcodeStr = dict["errorcode"], errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)
     }
@@ -477,9 +477,9 @@ public func FormatStreamMapFromString(string: String) throws -> [FormatStreamMap
  - returns: YouTubeStreaming object.
  */
 public func YouTubeStreamingFromString(string: String) throws -> YouTubeStreaming {
-    let dict = str2dict(string)
+    let dict = str2dict(str: string)
     if let _ = dict["url_encoded_fmt_stream_map"] {
-        return YouTubeStreaming(str2dict(string))
+        return YouTubeStreaming(str2dict(str: string))
     } else if let errorcodeStr = dict["errorcode"], errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)
     }
