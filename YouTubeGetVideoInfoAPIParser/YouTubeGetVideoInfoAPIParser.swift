@@ -14,7 +14,7 @@ import Foundation
  - returns: Dictionary object as [String:String]
  */
 func str2dict(str: String) -> [String:String] {
-    return str.components(separatedBy: "&").reduce([:] as [String:String], combine: {
+    return str.components(separatedBy: "&").reduce([:] as [String:String], {
         var d = $0
         let components = $1.components(separatedBy: "=")
         if components.count == 2 {
@@ -444,7 +444,7 @@ public struct YouTubeStreaming {
                 .components(separatedBy: ",")
                 .flatMap({ str2dict(str: $0) })
                 .flatMap({ FormatStreamMap($0) })
-                .sorted(isOrderedBefore: {$0.0.quality < $0.1.quality})
+                .sorted(by: {$0.0.quality < $0.1.quality})
         } else {
             urlEncodedFmtStreamMap = []
         }
@@ -464,7 +464,7 @@ public func FormatStreamMapFromString(string: String) throws -> [FormatStreamMap
             .components(separatedBy: ",")
             .flatMap({ str2dict(str: $0) })
             .flatMap({ FormatStreamMap($0) })
-            .sorted(isOrderedBefore: {$0.0.quality < $0.1.quality})
+            .sorted(by: {$0.0.quality < $0.1.quality})
     } else if let errorcodeStr = dict["errorcode"], let errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)
     }
