@@ -1,3 +1,7 @@
+[![Version](http://img.shields.io/cocoapods/v/YouTubeStreamingURLParser.svg?style=flat)](http://cocoadocs.org/docsets/YouTubeStreamingURLParser)
+[![License](https://img.shields.io/cocoapods/l/YouTubeStreamingURLParser.svg?style=flat)](http://cocoadocs.org/docsets/YouTubeStreamingURLParser)
+[![Platform](https://img.shields.io/cocoapods/p/YouTubeStreamingURLParser.svg?style=flat)](http://cocoadocs.org/docsets/YouTubeStreamingURLParser)
+
 # YouTubeStreamingURLParser
 Swift Library to parse YouTube streaming data from get\_video\_info API.
 
