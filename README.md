@@ -3,12 +3,30 @@
 [![Platform](https://img.shields.io/cocoapods/p/YouTubeStreamingURLParser.svg?style=flat)](http://cocoadocs.org/docsets/YouTubeStreamingURLParser)
 
 # YouTubeStreamingURLParser
-Swift Library to parse YouTube streaming data from get\_video\_info API.
 
-## Text parser for YouTube streaming in Swift
 
-* https://www.youtube.com/get\_video\_info?video_id=XXXXXXXXXXXXX
-* This API returns a streaming information with CGI parameter style.
+## Overview
+Swift Library to parse YouTube streaming data from `get_video_info` API. 
+
+You have to extract the raw media streaming URL of a YouTube movie when you want to play it using AVFoundation. For example, following code does not work.
+
+```
+// This code DOES NOT work.
+let youtubeUrl = "https://www.youtube.com/watch?v=ROEIKn8OsGU"
+if let url = URL(string: youtubeUrl) {
+    let item = AVPlayerItem(url: url)
+    let player = AVPlayer(playerItem: item)
+    ....
+}
+```
+
+You have to download a movie information via `get_video_info` API, `https://www.youtube.com/get_video_info?video_id=XXXXXXXXXXXXX`,  before playing the movie.
+While, downloading and parsing the information is very boaring.
+YouTubeStreamingURLParser helps you to do it.
+
+## YouTube streaming information
+
+This API returns a streaming information with CGI parameter style.
 
 ```
 token=<value>&idpj=<value>&as_launched_in_country=<value>&iurlmq=<value>&
@@ -41,7 +59,9 @@ loeid=<value>&afv_ad_tag=<value>&allow_embed=<value>&enablecsi=<value>&status=ok
 
 ## Streaming URL in "url\_encoded\_fmt\_stream\_map"
 
-* "url\_encoded\_fmt\_stream\_map" includes CGI parameter style text which is comma seperated.
+An entry whose key is "url\_encoded\_fmt\_stream\_map" includes CGI parameter style text which is comma seperated. This parameter often has one more than entries. Each entry involves the movie's video type, raw media streaming URL, size and so on.
+
+If you want to get the movie of raw streaming URL, 
 
 ```
 <entry>,<entry>,<entry>,<entry>,<entry>,<entry>,<entry>
@@ -59,9 +79,9 @@ quality=hd720
 
 ```
 let infoURL = NSURL(string:"https://www.youtube.com/get_video_info?video_id=\(youtubeContentID)") {
-let URLRequest = NSMutableURLRequest(URL: infoURL)
+let request = NSMutableURLRequest(URL: infoURL)
 let session = NSURLSession(configuration: sessionConfiguration)
-let task = session.dataTaskWithRequest(URLRequest, completionHandler: { (data, response, error) -> Void in
+let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
     if let error = error {
         print(error)
     } else if let data = data, result = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
