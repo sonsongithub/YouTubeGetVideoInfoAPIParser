@@ -470,7 +470,7 @@ public func FormatStreamMapFromString(_ string: String) throws -> [FormatStreamM
     } else if let errorcodeStr = dict["errorcode"], let errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)
     }
-    throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: 0, userInfo: ["description":"unknown error"])
+    throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: 0, userInfo: ["description": "unknown error"])
 }
 
 /**
@@ -485,5 +485,5 @@ public func YouTubeStreamingFromString(_ string: String) throws -> YouTubeStream
     } else if let errorcodeStr = dict["errorcode"], let errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)
     }
-    throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: 0, userInfo: ["description":"unknown error"])
+    throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: 0, userInfo: ["description": "unknown error"])
 }

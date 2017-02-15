@@ -67,7 +67,7 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
         if let infoURL = URL(string:"https://www.youtube.com/get_video_info?video_id=\(youtubeContentID)") {
             let request = NSMutableURLRequest(url: infoURL)
             let session = URLSession(configuration: configuration)
-            let task = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+            let task = session.dataTask(with: request as URLRequest, completionHandler: { (data, _, error) -> Void in
                 if let error = error {
                     print(error)
                 } else if let data = data, let result = String(data: data, encoding: .utf8) {
