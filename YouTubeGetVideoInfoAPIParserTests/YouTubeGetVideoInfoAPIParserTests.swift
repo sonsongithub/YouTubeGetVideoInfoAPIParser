@@ -98,7 +98,7 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
     func testErrorResponse() {
         if let text = textFromFile("error.txt") {
             do {
-                let _ = try FormatStreamMapFromString(text)
+                _ = try FormatStreamMapFromString(text)
                 XCTFail()
             } catch {
                 print(error)
@@ -129,7 +129,7 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
                     do {
                         let array = try FormatStreamMapFromString(text)
                         
-                        let sorted = array.sorted(by: { $0.0.itag > $0.1.itag })
+                        let sorted = array.sorted(by: { $0.itag > $1.itag })
                         XCTAssert(sorted.count == mapjson.count)
                         for i in 0 ..< sorted.count {
                             if let type = mapjson[i]["type"] {

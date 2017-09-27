@@ -446,7 +446,7 @@ public struct YouTubeStreaming {
                 .components(separatedBy: ",")
                 .flatMap({ str2dict($0) })
                 .flatMap({ FormatStreamMap($0) })
-                .sorted(by: {$0.0.quality < $0.1.quality})
+                .sorted(by: {$0.quality < $1.quality})
         } else {
             urlEncodedFmtStreamMap = []
         }
@@ -466,7 +466,7 @@ public func FormatStreamMapFromString(_ string: String) throws -> [FormatStreamM
             .components(separatedBy: ",")
             .flatMap({ str2dict($0) })
             .flatMap({ FormatStreamMap($0) })
-            .sorted(by: {$0.0.quality < $0.1.quality})
+            .sorted(by: {$0.quality < $1.quality})
     } else if let errorcodeStr = dict["errorcode"], let errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)
     }
