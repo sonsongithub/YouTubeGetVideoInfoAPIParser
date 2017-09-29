@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "YouTubeGetVideoInfoAPIParser"
-  s.version          = "1.0.0"
+  s.version          = "1.0.3"
   s.summary          = "Swift Library to parse YouTube streaming data from get_video_info API."
   s.description      = <<-DESC
                          Provides functions and structs to hadling YouTube streaming information.
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.author           = { "sonson" => "yoshida.yuichi@gmail.com" }
   s.source           = {
     :git => "https://github.com/sonsongithub/YouTubeGetVideoInfoAPIParser.git",
-    :tag => "v#{s.version}"
+    :tag => "#{s.version}"
   }
 
   s.social_media_url = 'https://twitter.com/sonson_twit'
