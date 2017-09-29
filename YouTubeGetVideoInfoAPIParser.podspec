@@ -14,9 +14,9 @@ Pod::Spec.new do |s|
   }
 
   s.social_media_url = 'https://twitter.com/sonson_twit'
-  s.ios.deployment_target = "9.3"
+  s.ios.deployment_target = "8.4"
   s.osx.deployment_target = "10.9"
-  s.tvos.deployment_target = "9.0"
+  s.tvos.deployment_target = "9.2"
   s.requires_arc = true
   s.source_files = 'YouTubeGetVideoInfoAPIParser/*.swift'
 end
