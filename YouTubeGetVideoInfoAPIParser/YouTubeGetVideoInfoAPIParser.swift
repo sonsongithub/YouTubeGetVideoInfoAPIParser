@@ -13,8 +13,8 @@ import Foundation
  - parameter str: String to be parsed.
  - returns: Dictionary object as [String:String]
  */
-func str2dict(_ str: String) -> [String:String] {
-    return str.components(separatedBy: "&").reduce([:] as [String:String], {
+func str2dict(_ str: String) -> [String: String] {
+    return str.components(separatedBy: "&").reduce([:] as [String: String], {
         var d = $0
         let components = $1.components(separatedBy: "=")
         if components.count == 2 {
@@ -101,7 +101,7 @@ public struct FormatStreamMap {
     public let url: URL
     public let s: String
     
-    public init?(_ dict: [String:String]) {
+    public init?(_ dict: [String: String]) {
         guard let type = dict["type"] else { return nil }
         guard let urlString = dict["url"] else { return nil }
         guard let url = URL(string: urlString) else { return nil }
@@ -323,7 +323,7 @@ public struct YouTubeStreaming {
     ///
     public let urlEncodedFmtStreamMap: [FormatStreamMap]
     
-    init(_ dict: [String:String]) {
+    init(_ dict: [String: String]) {
         csiPageType = dict["csi_page_type"] ?? ""
         enabledEngageTypes = dict["enabled_engage_types"] ?? ""
         tagForChildDirected = (dict["tag_for_child_directed"] ?? "false").lowercased() == "true"
@@ -363,7 +363,7 @@ public struct YouTubeStreaming {
         
         if let temp = dict["watermark"] {
             watermark = temp.components(separatedBy: ",")
-                .filter({ $0.characters.count > 0 })
+                .filter({ $0.utf16.count > 0 })
         } else {
             watermark = []
         }
@@ -444,8 +444,8 @@ public struct YouTubeStreaming {
         if let value = dict["url_encoded_fmt_stream_map"] {
             urlEncodedFmtStreamMap = value
                 .components(separatedBy: ",")
-                .flatMap({ str2dict($0) })
-                .flatMap({ FormatStreamMap($0) })
+                .compactMap({ str2dict($0) })
+                .compactMap({ FormatStreamMap($0) })
                 .sorted(by: {$0.quality < $1.quality})
         } else {
             urlEncodedFmtStreamMap = []
@@ -464,8 +464,8 @@ public func FormatStreamMapFromString(_ string: String) throws -> [FormatStreamM
     if let value = dict["url_encoded_fmt_stream_map"] {
         return value
             .components(separatedBy: ",")
-            .flatMap({ str2dict($0) })
-            .flatMap({ FormatStreamMap($0) })
+            .compactMap({ str2dict($0) })
+            .compactMap({ FormatStreamMap($0) })
             .sorted(by: {$0.quality < $1.quality})
     } else if let errorcodeStr = dict["errorcode"], let errorcode = Int(errorcodeStr) {
         throw NSError(domain: "com.sonson.YouTubeGetVideoInfoAPIParse", code: errorcode, userInfo: dict)

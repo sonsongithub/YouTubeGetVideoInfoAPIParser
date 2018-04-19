@@ -11,17 +11,17 @@ import Foundation
 
 @testable import YouTubeGetVideoInfoAPIParser
 
-fileprivate func < <T: Comparable>(lhs: T, rhs: T) -> Bool {
+private func < <T: Comparable>(lhs: T, rhs: T) -> Bool {
     return lhs < rhs
 }
 
-fileprivate func > <T: Comparable>(lhs: T, rhs: T) -> Bool {
+private func > <T: Comparable>(lhs: T, rhs: T) -> Bool {
     return lhs > rhs
 }
 
 extension XCTestCase {
     func textFromFile(_ name: String) -> String? {
-        if let path = Bundle(for: self.classForCoder).path(forResource: name, ofType:nil) {
+        if let path = Bundle(for: self.classForCoder).path(forResource: name, ofType: nil) {
             if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
                 return String(data: data, encoding: String.Encoding.utf8)
             }
@@ -31,10 +31,10 @@ extension XCTestCase {
     }
     
     func jsonFromFile(_ name: String) -> Any? {
-        if let path = Bundle(for: self.classForCoder).path(forResource: name, ofType:nil) {
+        if let path = Bundle(for: self.classForCoder).path(forResource: name, ofType: nil) {
             if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
                 do {
-                    return try JSONSerialization.jsonObject(with: data, options:JSONSerialization.ReadingOptions())
+                    return try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions())
                 } catch {
                     XCTFail((error as NSError).description)
                     return nil
@@ -62,9 +62,10 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 30
         configuration.timeoutIntervalForResource = 30
-        let youtubeContentID = "xOvSwdi5dr4"
+        let youtubeContentID = "C6TOajaKlzk" // 6AVCqPvoSFU
+        
         let documentOpenExpectation = self.expectation(description: "")
-        if let infoURL = URL(string:"https://www.youtube.com/get_video_info?video_id=\(youtubeContentID)") {
+        if let infoURL = URL(string: "https://www.youtube.com/get_video_info?video_id=\(youtubeContentID)") {
             let request = NSMutableURLRequest(url: infoURL)
             let session = URLSession(configuration: configuration)
             let task = session.dataTask(with: request as URLRequest, completionHandler: { (data, _, error) -> Void in
@@ -112,8 +113,8 @@ class YouTubeGetVideoInfoAPIParserTests: XCTestCase {
             ("alXF1gTNGWE.txt", "alXF1gTNGWE.json"),
             ("Hi9ySoy0JeQ.txt", "Hi9ySoy0JeQ.json")
         ].forEach({
-            if let text = textFromFile($0.0), let json = jsonFromFile($0.1) as? [String:AnyObject] {
-                if let mapjson = json["url_encoded_fmt_stream_map"] as? [[String:String]] {
+            if let text = textFromFile($0.0), let json = jsonFromFile($0.1) as? [String: AnyObject] {
+                if let mapjson = json["url_encoded_fmt_stream_map"] as? [[String: String]] {
                     do {
                         let streaming = try YouTubeStreamingFromString(text)
                         if let title = json["title"] as? String {
